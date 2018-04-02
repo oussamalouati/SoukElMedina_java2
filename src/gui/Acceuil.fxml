@@ -138,7 +138,7 @@
                         </FontAwesomeIconView>
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="music_btn" buttonType="RAISED" layoutX="-5.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#playaudio" prefHeight="29.0" prefWidth="32.0" ripplerFill="#a3d026" text=" ">
+                  <JFXButton fx:id="music_btn" buttonType="RAISED" layoutX="-5.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#stopaudio" prefHeight="29.0" prefWidth="32.0" ripplerFill="#a3d026" text=" ">
                      <graphic>
                         <FontAwesomeIconView fill="#fff4ee" glyphName="VOLUME_UP" size="20" wrappingWidth="17.999996691942215">
                            <effect>
@@ -153,7 +153,7 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </JFXButton>
-                  <JFXButton fx:id="music_btn_stop" buttonType="RAISED" layoutX="-5.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="29.0" prefWidth="32.0" ripplerFill="#a3d026" text=" " visible="false">
+                  <JFXButton fx:id="music_btn_stop" buttonType="RAISED" layoutX="-5.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#playaudio" prefHeight="29.0" prefWidth="32.0" ripplerFill="#a3d026" text=" " visible="false">
                      <graphic>
                         <FontAwesomeIconView fill="#fff4ee" glyphName="VOLUME_OFF" size="20" wrappingWidth="17.999996691942215">
                            <effect>

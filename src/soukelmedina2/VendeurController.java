@@ -3,7 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package soukelmedina2;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -21,6 +34,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -45,9 +59,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import static soukelmedina2.MainController.id;
+
 import static soukelmedina2.MainController.login;
+import static soukelmedina2.MainController.mediaPlayer;
 import static soukelmedina2.MainController.nom;
+import static soukelmedina2.MainController.playstatus;
+
 import static soukelmedina2.MainController.prenom;
 import utils.Connexion;
 import utils.Delta;
@@ -58,7 +78,8 @@ import utils.Delta;
  */
 public class VendeurController implements Initializable{
     final Delta dragDelta = new Delta();
-    
+
+    File img;
     String urlImgMag;
     @FXML
     private JFXTextField pass_text,nom_mag;
@@ -77,15 +98,15 @@ public class VendeurController implements Initializable{
     @FXML
     private JFXButton gest_compte,suppCompteStep1,suppCompteStep2,suppAnnuler;
     @FXML
-    private AnchorPane an_gestCompte,validerSupp,an_createMagasin;
+    private AnchorPane an_gestCompte,validerSupp,an_createMagasin,list_mag;
      @FXML
-    private AnchorPane dashboard;
+    private AnchorPane dashboard,mapanchor;
     @FXML
      private Label usr_corrd;
     @FXML
     private JFXButton logout_btn;
     @FXML
-    private JFXButton createMag,upload_mag,insert_mag;
+    private JFXButton createMag,upload_mag,insert_mag,music_btn, music_btn_stop;
 
     private FadeTransition fadeIn1 = new FadeTransition(
             Duration.millis(500)
@@ -101,6 +122,8 @@ public class VendeurController implements Initializable{
     }
     @FXML
     private void logout(ActionEvent event) throws IOException, Exception {
+           music_btn.fire();
+           
            Stage  current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
            
            Parent main_interface =FXMLLoader.load(getClass().getResource("/gui/Acceuil.fxml"));
@@ -128,6 +151,7 @@ public class VendeurController implements Initializable{
     private void gestionCompte(ActionEvent event) throws SQLException{
             dashboard.setVisible(false);
             an_gestCompte.setVisible(true);
+            an_createMagasin.setVisible(false);
             
             Connexion cn1 =Connexion.getInstance();
             Connection conn = cn1.getConnection();
@@ -228,23 +252,42 @@ public class VendeurController implements Initializable{
         });
                 
     }
-    
+      @FXML
+    public void playaudio(ActionEvent event) {
+        music_btn.setVisible(true);
+        music_btn_stop.setVisible(false);
+        mediaPlayer.play();
+    }
+    @FXML
+    public void stopaudio(ActionEvent event) {
+                music_btn.setVisible(false);
+                music_btn_stop.setVisible(true);
+                mediaPlayer.pause();           
+    }
     @FXML
     private void backtodash(ActionEvent event){
             dashboard.setVisible(true);
             an_gestCompte.setVisible(false);           
-            an_createMagasin.setVisible(false);
+            an_createMagasin.setVisible(false);    
     }
     
      @FXML
-    void createMagasin(ActionEvent event) {
+    void createMagasin(ActionEvent event) throws IOException {
             dashboard.setVisible(false);
             an_createMagasin.setVisible(true);
+            
+            /*Stage  current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Parent main_interface =FXMLLoader.load(getClass().getResource("/gui/MagMap.fxml"));
+                Scene  main_scene = new Scene(main_interface);
+                main_scene.setFill(Color.TRANSPARENT);
+                current_stage.close();
+                current_stage.setScene(main_scene);
+                current_stage.show();*/
             
             Connexion cn1 =Connexion.getInstance();
             Connection conn = cn1.getConnection();
             String reqAjtMag="INSERT INTO magazin (nom_magazin,description,adresse,latitude,longitude,img,proprietaire) VALUES(?,?,?,?,?,?,?)";
-            //upload de l'image/logo du magasin 
+            //slection de l'image/logo du magasin 
             upload_mag.setOnMousePressed(new EventHandler<MouseEvent>(){
                 @Override
                 public void handle(MouseEvent event) {
@@ -256,19 +299,13 @@ public class VendeurController implements Initializable{
                         new ExtensionFilter("BMP", new String[]{"*.bmp"}), 
                         new ExtensionFilter("PNG", new String[]{"*.png"}), 
                         new ExtensionFilter("GIF", new String[]{"*.gif"})});
-                    File img = fc_mag.showOpenDialog(null);
-                    Path pathdest = Paths.get("C:/Users/INETEL/Documents/GitHub/SoukElMedina/src/gui/"+img.getName());
-                    urlImgMag=pathdest.toString();
-                    try {         
-                        Files.copy(img.toPath(),pathdest, StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ex) {
-                        Logger.getLogger(VendeurController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                     img = fc_mag.showOpenDialog(null);
+                     urlImgMag ="http://localhost:80/skmedina/imgmag/"+img.getName();
                 }
             });
             insert_mag.setOnMousePressed(new EventHandler<MouseEvent>(){
                 @Override
-                public void handle(MouseEvent event) {
+                public void handle(MouseEvent event) {            
                      String nomMag=nom_mag.getText();
                      String discMag=descri_mag.getText();
                      String adrMag=adresse_mag.getText();
@@ -284,7 +321,44 @@ public class VendeurController implements Initializable{
                         st4.executeUpdate();
                     } catch (SQLException ex) {
                         Logger.getLogger(VendeurController.class.getName()).log(Level.SEVERE, null, ex);
-                    }                   
+                    }
+                    //upload de l'image vers le serveur
+                    HttpClient httpclient = new DefaultHttpClient();
+                    httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+                    HttpPost httppost = new HttpPost("http://localhost:80/skmedina/imgmag/upload.php");
+                    
+                    MultipartEntity mpEntity = new MultipartEntity();
+                    ContentBody cbFile = new FileBody(img, "image/jpeg");
+                    mpEntity.addPart("userfile", cbFile);
+
+                    httppost.setEntity(mpEntity);
+                    System.out.println("executing request " + httppost.getRequestLine());
+                    HttpResponse response = null;
+                    try {
+                        response = httpclient.execute(httppost);
+                    } catch (IOException ex) {
+                        Logger.getLogger(VendeurController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    HttpEntity resEntity = response.getEntity();
+
+                    System.out.println(response.getStatusLine());
+                    if (resEntity != null) {
+                        try {
+                            System.out.println(EntityUtils.toString(resEntity));
+                        } catch (IOException ex) {
+                            Logger.getLogger(VendeurController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (resEntity != null) {
+                        try {
+                            resEntity.consumeContent();
+                        } catch (IOException ex) {
+                            Logger.getLogger(VendeurController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    httpclient.getConnectionManager().shutdown();
                 }
             });
             
@@ -298,6 +372,15 @@ public class VendeurController implements Initializable{
         fadeIn1.setToValue(1.0);
         fadeIn1.setCycleCount(1);
         fadeIn1.setAutoReverse(true);
+        
+        if(playstatus){
+        music_btn.setVisible(false);
+        music_btn_stop.setVisible(true);
+        }else{
+        music_btn.setVisible(true);
+        music_btn_stop.setVisible(false);
+        playstatus=true;
+        }
     }
     
 }

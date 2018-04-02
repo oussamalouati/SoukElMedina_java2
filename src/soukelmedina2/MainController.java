@@ -48,9 +48,10 @@ import utils.Delta;
  * @author INETEL
  */
 public class MainController implements Initializable {
-    static boolean playStatus=false;
-    MediaPlayer mediaPlayer;
-    Media sound;
+    
+    static MediaPlayer mediaPlayer;
+    public static boolean playstatus=true;
+    static Media sound;
     public static int id;
     public static String nom;
     public static String prenom;
@@ -206,12 +207,13 @@ public class MainController implements Initializable {
                                 }
                             });
                             break;
-                        case "Vendeur":
+                        case "Vendeur":                           
                             Parent vendeur_interface = FXMLLoader.load(getClass().getResource("/gui/Vendeur.fxml"));
                             Scene vendeur_scene = new Scene(vendeur_interface);
                             main_stage.close();
                             main_stage.setScene(vendeur_scene);
                             main_stage.show();
+                            
                             /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
               servent à deplacer la fenetre.  */
                             vendeur_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -280,21 +282,20 @@ public class MainController implements Initializable {
         cnx_ban.setVisible(true);
         fadeIn2.playFromStart();
     }
-
     @FXML
     public void playaudio(ActionEvent event) {
-        music_btn.setVisible(false);
-        music_btn_stop.setVisible(true);
-        mediaPlayer.pause();
-        music_btn_stop.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                music_btn.setVisible(true);
-                music_btn_stop.setVisible(false);
-                mediaPlayer.play();
-            }
-        });
+        music_btn.setVisible(true);
+        music_btn_stop.setVisible(false);
+        mediaPlayer.play();
     }
+    @FXML
+    public void stopaudio(ActionEvent event) {
+                music_btn.setVisible(false);
+                music_btn_stop.setVisible(true);
+                mediaPlayer.pause();
+                playstatus=true;   
+    }
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -319,9 +320,16 @@ public class MainController implements Initializable {
         sound = new Media(new File("src/audio/audio.mp3").toURI().toString());
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setVolume(0.18);
-        if(!playStatus){
-        mediaPlayer.play();
-        playStatus=true;
+        
+        
+        if(playstatus){
+        //mediaPlayer.play();
+        music_btn_stop.fire();
+        playstatus=false;
+        }else{
+        music_btn.setVisible(false);
+        music_btn_stop.setVisible(true);
+        music_btn.fire();
         }
 
     }

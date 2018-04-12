@@ -32,7 +32,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/gui/Acceuil.fxml"));
         
         /* la ligne 33 permet de cacher le "windows bar/borders"  */
-        stage.initStyle(StageStyle.TRANSPARENT);
+       stage.initStyle(StageStyle.TRANSPARENT);
             
             /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
               servent à deplacer la fenetre.  */
@@ -48,17 +48,11 @@ public class Main extends Application {
                 stage.setY(mouseEvent.getScreenY() + dragDelta.y);
               }
             });
-        
-            
-            
-           
-            
+
         Scene scene = new Scene(root);
         
-         
-         
         scene.setFill(Color.TRANSPARENT);// cette ligne sert a rendre l'arriere plan transparent .
-        
+ 
         stage.setScene(scene);
         stage.show();
         

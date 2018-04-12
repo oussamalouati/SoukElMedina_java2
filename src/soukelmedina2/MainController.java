@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import entities.User;
 import java.awt.Button;
 import static java.awt.SystemColor.window;
 import java.io.File;
@@ -40,7 +41,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import services.UserService;
 import utils.Delta;
 
 /**
@@ -48,15 +51,16 @@ import utils.Delta;
  * @author INETEL
  */
 public class MainController implements Initializable {
-    
+
     static MediaPlayer mediaPlayer;
-    public static boolean playstatus=true;
+    public static boolean playstatus = true;
     static Media sound;
     public static int id;
     public static String nom;
     public static String prenom;
     public static String login;
     final Delta dragDelta = new Delta();
+    UserService US = new UserService();
     @FXML
     private JFXButton btn_ins, btn_return, btn_cnx;
     @FXML
@@ -163,118 +167,87 @@ public class MainController implements Initializable {
 
     @FXML
     private void Connexion(ActionEvent event) throws SQLException, IOException {
-        Stage main_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        Connexion cn1 = Connexion.getInstance();
-        Connection conn = cn1.getConnection();
+        Stage old_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Stage main_stage = new Stage();
+
         login = cnx_f_field.getText();
         System.out.println(login);
-        String reqcnx = "SELECT * FROM users WHERE username=?";
-        PreparedStatement st = conn.prepareStatement(reqcnx);
-        st.setString(1, login);
-        ResultSet rs;
-        rs = st.executeQuery();
 
-        if (rs.isBeforeFirst()) {
-            while (rs.next()) {
-                String mdp = rs.getString("mdp");
-                nom = rs.getString("nom");
-                prenom = rs.getString("prenom");
-                id = rs.getInt("id");
-                if (cnx_mdp_field.getText().equals(mdp)) {
-                    String stat = rs.getString("status");
-                    switch (stat) {
-                        case "Admin":
-                            Parent admin_interface = FXMLLoader.load(getClass().getResource("/gui/Admin.fxml"));
-                            Scene admin_scene = new Scene(admin_interface);
-                            main_stage.close();
-                            main_stage.setScene(admin_scene);
-                            main_stage.show();
-
-                            /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
+        String stat = US.authentification(login, cnx_mdp_field.getText());
+        switch (stat) {
+            case "Admin":
+                Parent admin_interface = FXMLLoader.load(getClass().getResource("/gui/Admin.fxml"));
+                Scene admin_scene = new Scene(admin_interface);
+                main_stage.close();
+                main_stage.setScene(admin_scene);
+                main_stage.show();
+                /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
               servent à deplacer la fenetre.  */
-                            admin_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    dragDelta.x = main_stage.getX() - mouseEvent.getScreenX();
-                                    dragDelta.y = main_stage.getY() - mouseEvent.getScreenY();
-                                }
-                            });
-                            admin_interface.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    main_stage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                                    main_stage.setY(mouseEvent.getScreenY() + dragDelta.y);
-                                }
-                            });
-                            break;
-                        case "Vendeur":                           
-                            Parent vendeur_interface = FXMLLoader.load(getClass().getResource("/gui/Vendeur.fxml"));
-                            Scene vendeur_scene = new Scene(vendeur_interface);
-                            main_stage.close();
-                            main_stage.setScene(vendeur_scene);
-                            main_stage.show();
-                            
-                            /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
-              servent à deplacer la fenetre.  */
-                            vendeur_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    dragDelta.x = main_stage.getX() - mouseEvent.getScreenX();
-                                    dragDelta.y = main_stage.getY() - mouseEvent.getScreenY();
-                                }
-                            });
-                            vendeur_interface.setOnMouseDragged(new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent mouseEvent) {
-                                    main_stage.setX(mouseEvent.getScreenX() + dragDelta.x);
-                                    main_stage.setY(mouseEvent.getScreenY() + dragDelta.y);
-                                }
-                            });
-                            break;
-                        case "Client":  ;
-                            break;
-                        default:
-                            System.out.println("Probléme de connexion");
-                            break;
+                admin_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        dragDelta.x = main_stage.getX() - mouseEvent.getScreenX();
+                        dragDelta.y = main_stage.getY() - mouseEvent.getScreenY();
                     }
-                } else {
-                    System.out.println("mdp incorrect");
-                }
-            }
+                });
+                admin_interface.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        main_stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                        main_stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+                    }
+                });
+                break;
+            case "Vendeur":
+                Parent vendeur_interface = FXMLLoader.load(getClass().getResource("/gui/Vendeur.fxml"));
+                Scene vendeur_scene = new Scene(vendeur_interface);
+                old_stage.close();
+                main_stage.setScene(vendeur_scene);
+                main_stage.initStyle(StageStyle.UNDECORATED);
+                main_stage.show();
 
-        } else {
-            System.out.println("username incorrect");
+                /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
+              servent à deplacer la fenetre.  */
+                vendeur_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        dragDelta.x = main_stage.getX() - mouseEvent.getScreenX();
+                        dragDelta.y = main_stage.getY() - mouseEvent.getScreenY();
+                    }
+                });
+                vendeur_interface.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        main_stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                        main_stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+                    }
+                });
+                break;
+            case "Client":  ;
+                break;
+            default:
+                System.out.println("Probléme de connexion");
+                break;
         }
+
     }
 
     @FXML
     private void inscription() throws SQLException {
-        Connexion cn1 = Connexion.getInstance();
-        Connection conn = cn1.getConnection();
-        //recuperation des information a partir du formulaire d'inscription
-        String nom = nom_field.getText();
-        String prenom = prenom_field.getText();
-        String username = username_field.getText();
-        String date_naiss = date_picker.getValue().toString();
-        String email = email_field.getText();
-        String tel = tel_field.getText();
-        String adresse = adresse_area.getText();
-        String typeCompte = type_acc.getSelectionModel().getSelectedItem();
-        String mdp = mdp_field.getText();
-        //insertion dans la BD 
-        String reqIns = "INSERT INTO users (nom,prenom,username,date_naissance,email,tel,adresse,mdp,status) VALUES  (?,?,?,?,?,?,?,?,?)";
-        PreparedStatement st = conn.prepareStatement(reqIns);
-        st.setString(1, nom);
-        st.setString(2, prenom);
-        st.setString(3, username);
-        st.setString(4, date_naiss);
-        st.setString(5, email);
-        st.setString(6, tel);
-        st.setString(7, adresse);
-        st.setString(8, mdp);
-        st.setString(9, typeCompte);
-        st.executeUpdate();
-        //retour à l'interface de l'inscription
+        User user = new User();
+        //recuperation des information a partir du formulaire d'inscription.
+        user.setNom(nom_field.getText());
+        user.setPrenom(prenom_field.getText());
+        user.setUsername(username_field.getText());
+        user.setDate_naiss(date_picker.getValue().toString());
+        user.setEmail(email_field.getText());
+        user.setTel(tel_field.getText());
+        user.setAdresse(adresse_area.getText());
+        user.setTypeCompte(type_acc.getSelectionModel().getSelectedItem());
+        user.setMdp(mdp_field.getText());
+        //insertion dans la BD.
+        US.insertUser(user);
+        //retour à l'interface de l'inscription.
         an_ins.setVisible(false);
         ins_ban.setVisible(false);
         left_ctrl.setVisible(true);
@@ -282,20 +255,21 @@ public class MainController implements Initializable {
         cnx_ban.setVisible(true);
         fadeIn2.playFromStart();
     }
+
     @FXML
     public void playaudio(ActionEvent event) {
         music_btn.setVisible(true);
         music_btn_stop.setVisible(false);
         mediaPlayer.play();
     }
+
     @FXML
     public void stopaudio(ActionEvent event) {
-                music_btn.setVisible(false);
-                music_btn_stop.setVisible(true);
-                mediaPlayer.pause();
-                playstatus=true;   
+        music_btn.setVisible(false);
+        music_btn_stop.setVisible(true);
+        mediaPlayer.pause();
+        playstatus = true;
     }
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -320,16 +294,15 @@ public class MainController implements Initializable {
         sound = new Media(new File("src/audio/audio.mp3").toURI().toString());
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.setVolume(0.18);
-        
-        
-        if(playstatus){
-        //mediaPlayer.play();
-        music_btn_stop.fire();
-        playstatus=false;
-        }else{
-        music_btn.setVisible(false);
-        music_btn_stop.setVisible(true);
-        music_btn.fire();
+
+        if (playstatus) {
+            //mediaPlayer.play();
+            music_btn_stop.fire();
+            playstatus = false;
+        } else {
+            music_btn.setVisible(false);
+            music_btn_stop.setVisible(true);
+            music_btn.fire();
         }
 
     }

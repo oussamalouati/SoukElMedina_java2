@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+
+<StackPane prefHeight="205.0" prefWidth="483.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+   <children>
+      <AnchorPane prefHeight="205.0" prefWidth="475.0" style="-fx-background-color: #E2E8DD; -fx-background-radius: 15px;">
+         <children>
+            <Label layoutX="11.0" layoutY="87.0" text="Est-ce que vous êtes sûr de supprimer cette magasin?" textFill="#390894">
+               <font>
+                  <Font name="Calibri" size="21.0" />
+               </font>
+            </Label>
+            <FontAwesomeIconView fill="#e8262c" glyphName="TRASH" layoutX="309.0" layoutY="70.0" size="60" text="" />
+            <JFXButton fx:id="suppMagValider" buttonType="RAISED" layoutX="275.0" layoutY="147.0" onAction="#supprimer" prefHeight="31.0" prefWidth="193.0" ripplerFill="#bf0b11" style="-fx-background-color: #EA2337;" text="Oui, supprimer">
+               <font>
+                  <Font size="13.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <JFXButton fx:id="suppMagAnnuler" buttonType="RAISED" layoutX="14.0" layoutY="147.0" onAction="#annuler" prefHeight="31.0" prefWidth="193.0" ripplerFill="#bf0b11" style="-fx-background-color: #50D620;" text="Non, annuler">
+               <font>
+                  <Font size="13.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <FontAwesomeIconView fill="#e8262c" glyphName="MAIL_FORWARD" layoutX="281.0" layoutY="31.0" rotate="33.7" size="30" />
+            <Label fx:id="nommagAsupp" alignment="CENTER_RIGHT" layoutX="82.0" layoutY="21.0" prefHeight="24.0" prefWidth="193.0" text="NOM magasin" textAlignment="RIGHT" textFill="#e8262c">
+               <font>
+                  <Font name="Impact" size="20.0" />
+               </font>
+            </Label>
+         </children>
+         <effect>
+            <DropShadow height="148.5" radius="81.1625" spread="0.23" width="178.15" />
+         </effect>
+      </AnchorPane>
+   </children>
+</StackPane>

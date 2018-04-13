@@ -46,7 +46,7 @@ public class ModifmagazinController implements Initializable {
     int idmagmodif;
     File img;
     MagasinService MS = new MagasinService();
-
+    MapController mapctrl;
     @FXML
     private AnchorPane an_modifMagasin;
 
@@ -80,7 +80,10 @@ public class ModifmagazinController implements Initializable {
         current_stage.close();
         Updmag = false;
     }
-
+    
+     public void markeradress(String adresseCMarker){
+     adresse_mag.setText(adresseCMarker);
+    }
     @FXML
     void modifer(ActionEvent event) {
         Stage current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -104,8 +107,6 @@ public class ModifmagazinController implements Initializable {
         });
         //upload de l'image vers le serveur
 
-        
-
         Magasin magasin = new Magasin();
         magasin.setNom_magasin(nom_mag.getText());
         magasin.setDescription(descri_mag.getText());
@@ -123,6 +124,15 @@ public class ModifmagazinController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ResultSet rsm2 = MS.afficherMagasin(idmagmodif);
         try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Map.fxml"));
+         mapctrl = new MapController();
+        loader.setController(mapctrl);
+        mapanchor.getChildren().add(loader.load());
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ModifmagazinController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
             rsm2.next();
             nom_mag.setText(rsm2.getString("nom_magazin"));
             descri_mag.setText(rsm2.getString("description"));
@@ -135,11 +145,7 @@ public class ModifmagazinController implements Initializable {
         } catch (SQLException ex) {
             Logger.getLogger(ModifmagazinController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            mapanchor.getChildren().add(FXMLLoader.load(getClass().getResource("/gui/Map.fxml")));
-        } catch (IOException ex) {
-            Logger.getLogger(ModifmagazinController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
 
 }

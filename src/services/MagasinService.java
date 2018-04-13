@@ -41,8 +41,8 @@ public class MagasinService implements ImagasinService {
             st4.setString(6, magasin.getUrlimg());
             st4.setInt(7, magasin.getProprietaire());
             st4.executeUpdate();
-        } catch (Exception ex) {
-            System.out.println("erreur d'insertion du magasin");
+        } catch (SQLException ex) {
+            System.out.println("erreur d'insertion du magasin"+ex.getMessage());
         }
     }
 

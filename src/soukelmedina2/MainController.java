@@ -51,7 +51,8 @@ import utils.Delta;
  * @author INETEL
  */
 public class MainController implements Initializable {
-
+    
+    public static VendeurController vdrctrl;
     static MediaPlayer mediaPlayer;
     public static boolean playstatus = true;
     static Media sound;
@@ -199,7 +200,13 @@ public class MainController implements Initializable {
                 });
                 break;
             case "Vendeur":
-                Parent vendeur_interface = FXMLLoader.load(getClass().getResource("/gui/Vendeur.fxml"));
+                
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Vendeur.fxml"));
+                 vdrctrl = new VendeurController();
+                loader.setController(vdrctrl);
+                Parent vendeur_interface = loader.load();
+
                 Scene vendeur_scene = new Scene(vendeur_interface);
                 old_stage.close();
                 main_stage.setScene(vendeur_scene);

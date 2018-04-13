@@ -44,6 +44,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import services.MagasinService;
 import services.UserService;
+import static soukelmedina2.MagazinController.SupStatus;
 
 import static soukelmedina2.MainController.id;
 
@@ -52,6 +53,8 @@ import static soukelmedina2.MainController.nom;
 import static soukelmedina2.MainController.playstatus;
 
 import static soukelmedina2.MainController.prenom;
+
+
 import static soukelmedina2.MapController.lat;
 import static soukelmedina2.MapController.lng;
 import utils.Delta;
@@ -62,7 +65,8 @@ import utils.Uploadimg;
  * @author INETEL
  */
 public class VendeurController implements Initializable {
-
+    
+    public static boolean markerchange=false;
     public static GridPane gridpane;
     final Delta dragDelta = new Delta();
     public static String nomMag;
@@ -257,12 +261,20 @@ public class VendeurController implements Initializable {
         scrollPanemag.setVisible(false);
         mapanchor.getChildren().clear();
     }
-
+    public void markeradress(String adresseCMarker){
+     adresse_mag.setText(adresseCMarker);
+    }
     @FXML
     void createMagasin(ActionEvent event) throws IOException {
         an_createMagasin.setVisible(true);
         dashboard.setVisible(false);
-        mapanchor.getChildren().add(FXMLLoader.load(getClass().getResource("/gui/Map.fxml")));
+        
+        //mapanchor.getChildren().add(FXMLLoader.load(getClass().getResource("/gui/Map.fxml")));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Map.fxml"));
+        MapController mapctrl = new MapController();
+        loader.setController(mapctrl);
+        mapanchor.getChildren().add(loader.load());
+     
         //slection de l'image/logo du magasin 
         upload_mag.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -294,19 +306,24 @@ public class VendeurController implements Initializable {
                  MS.insertMagasin(magasin);
                  
                  Uploadimg upimg = new Uploadimg(img);
+                 
+                 gestionMag_btn.fire();
             }
         });
     }
 
     @FXML
     public void gestionMag(ActionEvent event) throws SQLException, IOException {
-
+        int cmpt=0;
         scrollPanemag.setVisible(true);
         dashboard.setVisible(false);
         an_gestCompte.setVisible(false);
         an_createMagasin.setVisible(false);
         mapanchor.getChildren().clear();
-
+        if(cmpt == 1){
+       an_gestMag.getChildren().remove(gridpane);
+        }
+        
         MS.nbmags(); //calcul du nbr de magasins
         /*************************AFFICHAGE***************************************/
         gridpane = new GridPane();
@@ -343,10 +360,12 @@ public class VendeurController implements Initializable {
         }
         scrollPanemag.setFitToHeight(true);
         an_gestMag.getChildren().add(gridpane);
+        
+       
         an_gestMag.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                gridpane.getChildren().clear();
+                an_gestMag.getChildren().remove(gridpane);
                 gestionMag_btn.fire();
             }
         });

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="235.0" prefWidth="434.0" style="-fx-background-color: rgb(105, 190, 280,0); -fx-background-radius: 15px;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="235.0" prefWidth="434.0" style="-fx-background-color: rgb(105, 190, 280,0); -fx-background-radius: 15px;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane layoutY="1.0" prefHeight="235.0" prefWidth="433.0" style="-fx-background-color: rgb(105, 190, 280); -fx-background-radius: 20px;">
          <children>
@@ -40,6 +40,11 @@
                   <Font name="Impact" size="19.0" />
                </font>
             </Label>
+            <JFXButton fx:id="consulter" alignment="CENTER" buttonType="RAISED" contentDisplay="RIGHT" layoutX="255.0" layoutY="144.0" onAction="#consultercli" prefHeight="44.0" prefWidth="168.0" style="-fx-background-color: #D66700;" text="Consulter" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="Impact" size="18.0" />
+               </font>
+            </JFXButton>
          </children>
       </AnchorPane>
    </children>

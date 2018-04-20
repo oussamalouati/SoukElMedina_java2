@@ -3,24 +3,36 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
-
+package controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import entities.Magasin;
-import entities.User;
+import static controllers.MainController.id;
+import static controllers.MainController.mediaPlayer;
+import static controllers.MainController.nom;
+import static controllers.MainController.playstatus;
+import static controllers.MainController.prenom;
+import static controllers.MapController.lat;
+import static controllers.MapController.lng;
 
+import static controllers.VendeurController.gridpane;
+import static controllers.VendeurController.nomMag;
+import entities.Magasin;
+import entities.Panier;
+import entities.Produit;
+import entities.User;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,43 +50,33 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import services.MagasinService;
 import services.UserService;
-import static soukelmedina2.MagazinController.SupStatus;
-
-import static soukelmedina2.MainController.id;
-
-import static soukelmedina2.MainController.mediaPlayer;
-import static soukelmedina2.MainController.nom;
-import static soukelmedina2.MainController.playstatus;
-
-import static soukelmedina2.MainController.prenom;
-
-
-import static soukelmedina2.MapController.lat;
-import static soukelmedina2.MapController.lng;
 import utils.Delta;
 import utils.Uploadimg;
 
 /**
+ * FXML Controller class
  *
  * @author INETEL
  */
-public class VendeurController implements Initializable {
-    
-    public static boolean markerchange=false;
-    public static GridPane gridpane;
+public class ClientController implements Initializable {
+   
+    public static GridPane gridpanePpan;
+    public GridPane gridpane;
     final Delta dragDelta = new Delta();
     public static String nomMag;
     public static int nbrMag;
-    
+    public static boolean isClient = false;
+
+    public static Panier panier = new Panier();
+
     UserService US = new UserService();
     MagasinService MS = new MagasinService();
-    
+
     File img;
     String urlImgMag;
     @FXML
@@ -82,7 +84,7 @@ public class VendeurController implements Initializable {
     @FXML
     private AnchorPane validerSuppMag;
     @FXML
-    private ScrollPane scrollPanemag;
+    private ScrollPane scrollPanemags,scrollpanier;
     @FXML
     private JFXTextField pass_text, nom_mag;
     @FXML
@@ -100,24 +102,29 @@ public class VendeurController implements Initializable {
     @FXML
     private JFXButton gest_compte, suppCompteStep1, suppCompteStep2, suppAnnuler;
     @FXML
-    private AnchorPane an_gestCompte, validerSupp, an_createMagasin;
+    private AnchorPane an_gestCompte, validerSupp, an_Mags,produitpanier,votrepanier;
     @FXML
     private AnchorPane dashboard, mapanchor;
     @FXML
-    private Label usr_corrd;
+    private Label usr_corrd,totalpanier,nbprodpanlabel;
     @FXML
-    private JFXButton logout_btn, gestionMag_btn;
+    private JFXButton logout_btn, gestionMag_btn,afficherpan;
+
+    public JFXButton getAfficherpan() {
+        return afficherpan;
+    }
     @FXML
-    private JFXButton createMag, upload_mag, insert_mag, music_btn, music_btn_stop;
-    
+    private JFXButton createMag, upload_mag, insert_mag, music_btn, music_btn_stop ;
+
     @FXML
-    private  AnchorPane an_gestMag;
+    private AnchorPane an_gestMag;
     private FadeTransition fadeIn1 = new FadeTransition(
             Duration.millis(500)
     );
 
     @FXML
     private void handleClose() {
+        isClient = false;
         System.exit(0);
     }
 
@@ -129,6 +136,7 @@ public class VendeurController implements Initializable {
 
     @FXML
     private void logout(ActionEvent event) throws IOException, Exception {
+        isClient = false;
         music_btn.fire();
 
         Stage current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -163,10 +171,8 @@ public class VendeurController implements Initializable {
     private void gestionCompte(ActionEvent event) throws SQLException {
         an_gestCompte.setVisible(true);
         dashboard.setVisible(false);
-        an_createMagasin.setVisible(false);
-        scrollPanemag.setVisible(false);
-        mapanchor.getChildren().clear();
- 
+        scrollPanemags.setVisible(false);
+
         //affichage des information de l'utilisateur authentifié 
         User user = US.afficherUser(id);
         nom_field.setText(user.getNom());
@@ -191,14 +197,14 @@ public class VendeurController implements Initializable {
                 userupd.setAdresse(adresse_area.getText());
                 userupd.setMdp(mdp_field.getText());
                 //update
-                US.modfierUser(userupd);  
+                US.modfierUser(userupd);
             }
         });
         suppCompteStep2.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                    US.supprimerUser(id);
-                    logout_btn.fire();              
+                US.supprimerUser(id);
+                logout_btn.fire();
             }
         });
         suppCompteStep1.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -257,95 +263,38 @@ public class VendeurController implements Initializable {
     private void backtodash(ActionEvent event) {
         dashboard.setVisible(true);
         an_gestCompte.setVisible(false);
-        an_createMagasin.setVisible(false);
-        scrollPanemag.setVisible(false);
-        mapanchor.getChildren().clear();
-    }
-    public void markeradress(String adresseCMarker){
-     adresse_mag.setText(adresseCMarker);
-    }
-    @FXML
-    void createMagasin(ActionEvent event) throws IOException {
-        an_createMagasin.setVisible(true);
-        dashboard.setVisible(false);
-        
-        //mapanchor.getChildren().add(FXMLLoader.load(getClass().getResource("/gui/Map.fxml")));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Map.fxml"));
-        MapController mapctrl = new MapController();
-        loader.setController(mapctrl);
-        mapanchor.getChildren().add(loader.load());
-     
-        //slection de l'image/logo du magasin 
-        upload_mag.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                FileChooser fc_mag = new FileChooser();
-                fc_mag.getExtensionFilters().addAll(new ExtensionFilter[]{
-                    new ExtensionFilter("Image Files", new String[]{"*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"}),
-                    new ExtensionFilter("JPG", new String[]{"*.jpg"}),
-                    new ExtensionFilter("JPEG", new String[]{"*.jpeg"}),
-                    new ExtensionFilter("BMP", new String[]{"*.bmp"}),
-                    new ExtensionFilter("PNG", new String[]{"*.png"}),
-                    new ExtensionFilter("GIF", new String[]{"*.gif"})});
-                img = fc_mag.showOpenDialog(null);
-                urlImgMag = "http://localhost:80/skmedina/imgmag/" + img.getName();
-            }
-        });
-        insert_mag.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Magasin magasin = new Magasin();
-                 magasin.setNom_magasin(nom_mag.getText()); 
-                 magasin.setDescription(descri_mag.getText());
-                 magasin.setAdresse(adresse_mag.getText());
-                 magasin.setUrlimg(urlImgMag);
-                 magasin.setLatitude(lat);
-                 magasin.setLongitude(lng);
-                 magasin.setProprietaire(id);
-                 
-                 MS.insertMagasin(magasin);
-                 
-                 Uploadimg upimg = new Uploadimg(img);
-                 
-                 gestionMag_btn.fire();
-            }
-        });
+        scrollPanemags.setVisible(false);
+        votrepanier.setVisible(false);
     }
 
     @FXML
-    public void gestionMag(ActionEvent event) throws SQLException, IOException {
-        int cmpt=0;
-        scrollPanemag.setVisible(true);
-        dashboard.setVisible(false);
+    void consulter_mag(ActionEvent event) throws SQLException, IOException {
+        scrollPanemags.setVisible(true);
         an_gestCompte.setVisible(false);
-        an_createMagasin.setVisible(false);
-        mapanchor.getChildren().clear();
-        if(cmpt == 1){
-       an_gestMag.getChildren().remove(gridpane);
-        }
-        
-        MS.nbmags(); //calcul du nbr de magasins
-        /*************************AFFICHAGE***************************************/
+        dashboard.setVisible(false);
+
+        MS.nbmags();//determiner le nbr de magazin
+
         gridpane = new GridPane();
         gridpane.setPadding(new Insets(65, 10, 10, 10));
         gridpane.setHgap(10);
         gridpane.setVgap(10);
-        
-        ResultSet rsm = MS.afficherTMagasins(); //lecture des magasins a partir de la base de données
-        
+
+        ResultSet rsm = MS.afficherTMagasinsCli();
+
         int col = 1;
         int row = 0;
         int index = -1;
 
         while (rsm.next()) {
-            nomMag = rsm.getString("nom_magazin"); 
-            int idmag=rsm.getInt("id");
+
+            int idmag = rsm.getInt("id");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Magazin.fxml"));
             MagazinController magctrl = new MagazinController();
             index++;
-            
+
             magctrl.setIdmagcurrent(idmag);
-            
+            magctrl.setNommagcurrent(rsm.getString("nom_magazin"));
             magctrl.setIndex(index);
             loader.setController(magctrl);
             Parent MagAnchor = loader.load();
@@ -358,22 +307,58 @@ public class VendeurController implements Initializable {
                 row++;
             }
         }
-        scrollPanemag.setFitToHeight(true);
-        an_gestMag.getChildren().add(gridpane);
+        scrollPanemags.setFitToHeight(true);
+        an_Mags.getChildren().add(gridpane);
+        
+        
+    }
+
+    @FXML
+    void afficherpanier(ActionEvent event) throws IOException {
+        int row = 0;
+        
+        produitpanier.getChildren().remove(gridpanePpan);
+        
+        votrepanier.setVisible(true);
+        totalpanier.setText(toString(panier.calculerPanier()));
         
        
-        an_gestMag.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                an_gestMag.getChildren().remove(gridpane);
-                gestionMag_btn.fire();
-            }
-        });
-        /*************************FIN AFFICHAGE***************************************/
+        Set cles = panier.getMapPan().keySet();
+        Iterator it = cles.iterator();
+        
+        gridpanePpan = new GridPane();
+        gridpanePpan.setPadding(new Insets(5, 5, 5, 5));
+        gridpanePpan.setHgap(5);
+        gridpanePpan.setVgap(5);
+        int indexprod = -1;
+        while (it.hasNext()) {
+            Produit cle = (Produit) it.next();
+            int qte = panier.getMapPan().get(cle);
+            
+            FXMLLoader loaderPpan = new FXMLLoader(getClass().getResource("/gui/Produitpanier.fxml"));
+            ProduitpanierController prodpanctrl = new ProduitpanierController();
+            prodpanctrl.setProduit(cle);
+            prodpanctrl.setQtePan(qte);
+            indexprod++;
+            prodpanctrl.setIndexprod(indexprod);
+            loaderPpan.setController(prodpanctrl);
+            Parent prodpanAnchor = loaderPpan.load();
+            
+            
+            gridpanePpan.add(prodpanAnchor, 1, row);
+            row++;
+        }
+        scrollpanier.setFitToHeight(true);
+        produitpanier.getChildren().add(gridpanePpan);
+        
+        
+        
     }
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+       
+        isClient = true;
         usr_corrd.setText(nom + " " + prenom);
         fadeIn1.setNode(validerSupp);
         fadeIn1.setFromValue(0.0);
@@ -391,5 +376,8 @@ public class VendeurController implements Initializable {
         }
 
     }
+    private String toString(float aInt) {
+        return ""+aInt;
+    }    
 
 }

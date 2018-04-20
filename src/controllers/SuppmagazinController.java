@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import com.jfoenix.controls.JFXButton;
 import java.net.URL;
@@ -14,7 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import static soukelmedina2.MagazinController.SupStatus;
+import static controllers.MagazinController.SupStatus;
 
 //import static soukelmedina2.VendeurController.nbrMag;
 

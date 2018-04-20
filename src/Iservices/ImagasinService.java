@@ -19,4 +19,5 @@ public interface ImagasinService {
      public ResultSet afficherMagasin(int idMag);
      public ResultSet afficherTMagasins();
      public int nbmags();
+     public ResultSet afficherTMagasinsCli();
 }

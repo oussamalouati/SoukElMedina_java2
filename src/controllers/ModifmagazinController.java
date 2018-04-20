@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import entities.Magasin;
 import java.net.URL;
@@ -14,11 +14,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import services.MagasinService;
-import static soukelmedina2.MagazinController.SupStatus;
-import static soukelmedina2.MagazinController.Updmag;
-import static soukelmedina2.MainController.id;
-import static soukelmedina2.MapController.lat;
-import static soukelmedina2.MapController.lng;
+import static controllers.MagazinController.SupStatus;
+import static controllers.MagazinController.Updmag;
+import static controllers.MainController.id;
+import static controllers.MapController.lat;
+import static controllers.MapController.lng;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -30,6 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -42,7 +44,7 @@ import utils.Uploadimg;
  */
 public class ModifmagazinController implements Initializable {
 
-    String urlImgMag;
+    public String urlImgMag;
     int idmagmodif;
     File img;
     MagasinService MS = new MagasinService();
@@ -66,6 +68,8 @@ public class ModifmagazinController implements Initializable {
     private JFXButton modif_mag;
     @FXML
     private AnchorPane mapanchor;
+   
+
     public int getIdmagmodif() {
         return idmagmodif;
     }
@@ -80,33 +84,39 @@ public class ModifmagazinController implements Initializable {
         current_stage.close();
         Updmag = false;
     }
-    
-     public void markeradress(String adresseCMarker){
-     adresse_mag.setText(adresseCMarker);
-    }
-    @FXML
-    void modifer(ActionEvent event) {
-        Stage current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        //slection de l'image/logo du magasin 
 
-        upload_mag.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                FileChooser fc_mag = new FileChooser();
-                fc_mag.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{
+    public void markeradress(String adresseCMarker) {
+        adresse_mag.setText(adresseCMarker);
+    }
+    public void uploadimgctrl(){
+    FileChooser fc_mag2 = new FileChooser();
+                
+                fc_mag2.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{
                     new FileChooser.ExtensionFilter("Image Files", new String[]{"*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp"}),
                     new FileChooser.ExtensionFilter("JPG", new String[]{"*.jpg"}),
                     new FileChooser.ExtensionFilter("JPEG", new String[]{"*.jpeg"}),
                     new FileChooser.ExtensionFilter("BMP", new String[]{"*.bmp"}),
                     new FileChooser.ExtensionFilter("PNG", new String[]{"*.png"}),
                     new FileChooser.ExtensionFilter("GIF", new String[]{"*.gif"})});
-                img = fc_mag.showOpenDialog(null);
+                
+                img = fc_mag2.showOpenDialog(null);
+                
                 urlImgMag = "http://localhost:80/skmedina/imgmag/" + img.getName();
+    
+    }
+    @FXML
+    void modifer(ActionEvent event) {
+        Stage current_stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        //slection de l'image/logo du magasin 
+        upload_mag.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
                 Uploadimg upimg = new Uploadimg(img);
             }
         });
+        
+        
         //upload de l'image vers le serveur
-
         Magasin magasin = new Magasin();
         magasin.setNom_magasin(nom_mag.getText());
         magasin.setDescription(descri_mag.getText());
@@ -116,7 +126,7 @@ public class ModifmagazinController implements Initializable {
         magasin.setLongitude(lng);
         magasin.setId(idmagmodif);
         MS.modfierMagasin(magasin);
-
+         
         current_stage.close();
     }
 
@@ -124,11 +134,11 @@ public class ModifmagazinController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ResultSet rsm2 = MS.afficherMagasin(idmagmodif);
         try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Map.fxml"));
-         mapctrl = new MapController();
-        loader.setController(mapctrl);
-        mapanchor.getChildren().add(loader.load());
-            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Map.fxml"));
+            mapctrl = new MapController();
+            loader.setController(mapctrl);
+            mapanchor.getChildren().add(loader.load());
+
         } catch (IOException ex) {
             Logger.getLogger(ModifmagazinController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -140,12 +150,12 @@ public class ModifmagazinController implements Initializable {
             lat = rsm2.getDouble("latitude");
             lng = rsm2.getDouble("longitude");
             urlImgMag = rsm2.getString("img");
-            
+           
             rsm2.close();
         } catch (SQLException ex) {
             Logger.getLogger(ModifmagazinController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
 }

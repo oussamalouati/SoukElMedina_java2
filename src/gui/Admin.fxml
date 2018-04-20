@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="1149.0" style="-fx-background-color: rgba(255, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="soukelmedina2.AdminController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="1149.0" style="-fx-background-color: rgba(255, 0, 0, 0);" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdminController">
    <children>
       <AnchorPane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="677.0" prefWidth="1204.0">
          <children>

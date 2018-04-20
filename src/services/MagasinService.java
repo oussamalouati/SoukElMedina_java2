@@ -12,8 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static soukelmedina2.MainController.id;
-import static soukelmedina2.VendeurController.nbrMag;
+import static controllers.MainController.id;
+import static controllers.VendeurController.nbrMag;
 import utils.Connexion;
 
 /**
@@ -66,12 +66,15 @@ public class MagasinService implements ImagasinService {
 
     @Override
     public void supprimerMagasin(int idMag) {
+        String supprod="DELETE FROM produit where id_mag='" + idMag + "'";
         String reqSup = "DELETE FROM magazin where id='" + idMag + "'";
         try {
             Statement stmsupp = conn.createStatement();
+            Statement stmsuppProd = conn.createStatement();
+            stmsuppProd.executeUpdate(supprod);
             stmsupp.executeUpdate(reqSup);
         } catch (Exception ex) {
-            System.out.println("erreur d'affichage du magasin");
+            System.out.println("erreur de supression du magasin"+ex.getMessage());
         }
     }
 
@@ -82,6 +85,19 @@ public class MagasinService implements ImagasinService {
             String affmag = "SELECT * FROM magazin WHERE proprietaire=?";
             PreparedStatement stm1 = conn.prepareStatement(affmag);
             stm1.setInt(1, id);
+            rsm = stm1.executeQuery();
+        } catch (Exception ex) {
+            System.out.println("erreur d'affichage des magasins");
+        }
+        return rsm;
+    }
+    
+    @Override
+    public ResultSet afficherTMagasinsCli() {
+        ResultSet rsm = null;
+        try {
+            String affmag = "SELECT * FROM magazin ";
+            PreparedStatement stm1 = conn.prepareStatement(affmag);
             rsm = stm1.executeQuery();
         } catch (Exception ex) {
             System.out.println("erreur d'affichage des magasins");

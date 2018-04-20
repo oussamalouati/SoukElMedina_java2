@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="an_modifMagasin" prefHeight="619.0" prefWidth="932.0" style="-fx-background-color: rgb(219,63,107,0.9); -fx-border-color: green; -fx-border-width: 2px;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <effect>
+      <DropShadow />
+   </effect>
+   <children>
+      <AnchorPane fx:id="magdetails" layoutX="3.0" layoutY="46.0" minHeight="-Infinity" prefHeight="221.0" prefWidth="932.0" style="-fx-background-color: #873D48;">
+         <children>
+            <ImageView fx:id="imgMag" fitHeight="185.0" fitWidth="196.0" layoutX="21.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@test.jpg" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+            <ImageView fitHeight="62.0" fitWidth="231.0" layoutX="-2.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@tind.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="nom_mag" alignment="CENTER" layoutX="275.0" layoutY="28.0" prefHeight="34.0" prefWidth="189.0" text="Nom Magasin" textFill="#d6dd08">
+               <font>
+                  <Font name="Impact" size="19.0" />
+               </font>
+            </Label>
+            <Text fx:id="description" fill="#fffefe" layoutX="235.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="description de la mag" wrappingWidth="269.13671875" />
+            <AnchorPane layoutX="528.0" prefHeight="220.0" prefWidth="3.0" style="-fx-background-color: #000000;" />
+            <AnchorPane fx:id="map_anchor" layoutX="530.0" layoutY="1.0" maxHeight="220.0" maxWidth="360.0" prefHeight="220.0" prefWidth="360.0" style="-fx-background-color: #2e2d2f;" />
+            <AnchorPane layoutX="890.0" prefHeight="220.0" prefWidth="3.0" style="-fx-background-color: #000000;" />
+         </children>
+      </AnchorPane>
+      <Label layoutX="356.0" layoutY="284.0" prefHeight="27.0" prefWidth="220.0" text="Les produits disponibles" textFill="#d6dd08" underline="true">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <ScrollPane hbarPolicy="NEVER" layoutX="3.0" layoutY="326.0" prefHeight="291.0" prefWidth="932.0">
+         <content>
+            <AnchorPane fx:id="an_prod_cli" prefHeight="292.0" prefWidth="918.0" style="-fx-background-color: rgb(219,63,107,0.8);" />
+         </content>
+      </ScrollPane>
+      <JFXButton fx:id="btn_return" buttonType="RAISED" layoutX="12.0" layoutY="6.0" onAction="#annuler" prefHeight="34.0" prefWidth="113.0" style="-fx-background-color: #D66700;" text="Retour" textFill="WHITE">
+         <font>
+            <Font name="Impact" size="18.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#fffafa" glyphName="ARROW_CIRCLE_LEFT" size="20" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+      <JFXButton fx:id="btnfav" buttonType="RAISED" layoutX="533.0" layoutY="6.0" prefHeight="34.0" prefWidth="360.0" style="-fx-background-color: #D66700;" text="Ajouter cette magasin a mes favoris" textFill="WHITE">
+         <font>
+            <Font name="Impact" size="18.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fill="#fffafa" glyphName="GRATIPAY" size="20" />
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </JFXButton>
+   </children>
+</AnchorPane>

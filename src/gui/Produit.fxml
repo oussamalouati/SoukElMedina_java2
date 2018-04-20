@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane id="AnchorPane" prefHeight="235.0" prefWidth="434.0" style="-fx-background-color: rgb(105, 190, 280,0); -fx-background-radius: 15px;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane layoutY="1.0" prefHeight="235.0" prefWidth="433.0" style="-fx-background-color: rgb(105, 190, 280); -fx-background-radius: 20px;">
+         <children>
+            <ImageView fx:id="imgProd" fitHeight="226.0" fitWidth="211.0" layoutX="17.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@client.png" />
+               </image>
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+            <JFXButton alignment="CENTER" buttonType="RAISED" contentDisplay="RIGHT" layoutX="228.0" layoutY="177.0" onAction="#ajouterPanier" prefHeight="38.0" prefWidth="189.0" style="-fx-background-color: #D66700;" text="Ajouter au panier" textFill="WHITE">
+               <font>
+                  <Font name="Impact" size="18.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fill="WHITE" glyphName="CART_PLUS" size="25" />
+               </graphic>
+            </JFXButton>
+            <Label fx:id="nom_prodlabel" alignment="CENTER" layoutX="217.0" layoutY="14.0" prefHeight="34.0" prefWidth="189.0" text="Nom Produit" textFill="#0f0643">
+               <font>
+                  <Font name="Impact" size="19.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="235.0" fitWidth="229.0" layoutX="8.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@orangecercle.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="262.0" layoutY="108.0" text="Prix:" textFill="#ab4646">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="384.0" layoutY="108.0" text="DT" textFill="#ab4646">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="prix" alignment="CENTER_RIGHT" layoutX="309.0" layoutY="101.0" prefHeight="17.0" prefWidth="73.0" text="100">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Label>
+            <Text fx:id="descriptionp" layoutX="257.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description" wrappingWidth="159.13671875" />
+            <Spinner fx:id="qtespin" editable="true" layoutX="337.0" layoutY="141.0" prefHeight="25.0" prefWidth="73.0">
+                 <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" initialValue="1" max="10" min="1" />
+                 </valueFactory>
+            </Spinner>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

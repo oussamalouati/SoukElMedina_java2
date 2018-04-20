@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import com.jfoenix.controls.JFXButton;
 import java.io.File;
@@ -42,11 +42,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import services.MagasinService;
-import static soukelmedina2.MainController.id;
-import static soukelmedina2.VendeurController.gridpane;
-import static soukelmedina2.VendeurController.nbrMag;
-//import static soukelmedina2.VendeurController.nbrMag;
-import static soukelmedina2.VendeurController.nomMag;
+import static controllers.MainController.id;
+import static controllers.MainController.vdrctrl;
+import static controllers.VendeurController.gridpane;
+import static controllers.VendeurController.nbrMag;
+import static controllers.VendeurController.nomMag;
 
 import utils.Connexion;
 import utils.Delta;
@@ -57,7 +57,7 @@ import utils.Delta;
  * @author INETEL
  */
 public class MagazinController implements Initializable {
-
+    
     private int index;
 
     public void setIndex(int index) {
@@ -69,6 +69,10 @@ public class MagazinController implements Initializable {
     }
 
     private String nommagcurrent;
+
+    public void setNommagcurrent(String nommagcurrent) {
+        this.nommagcurrent = nommagcurrent;
+    }
     private int idmagcurrent;
     MagasinService MS = new MagasinService();
     public static ModifmagazinController modifmagctrl;
@@ -79,7 +83,7 @@ public class MagazinController implements Initializable {
     final Delta dragDelta = new Delta();
     public static boolean SupStatus = false;
     public static boolean Updmag = false;
-    public static boolean reloadsup = false;
+    
     String URLimg;
     @FXML
     private Label nom_maglabel;
@@ -88,7 +92,7 @@ public class MagazinController implements Initializable {
     @FXML
     private JFXButton supp_mag;
     @FXML
-    private JFXButton modif_mag;
+    private JFXButton modif_mag,consulter;
 
     @FXML
     void modifMag(ActionEvent event) throws IOException {
@@ -107,6 +111,7 @@ public class MagazinController implements Initializable {
         modif_stage.setScene(modif_scene);
         modif_stage.initModality(Modality.APPLICATION_MODAL);
         modif_stage.showAndWait();
+        
 
     }
 
@@ -131,11 +136,30 @@ public class MagazinController implements Initializable {
 
         if (SupStatus) {
             MS.supprimerMagasin(idmagcurrent);
-            reloadsup = true;
             gridpane.getChildren().remove(this.index);
+            vdrctrl.getGestionMag_btn().fire();
             
         }
 
+    }
+     @FXML
+    void consultercli(ActionEvent event) throws IOException {
+            Stage supp_stage = new Stage();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MagDetails.fxml"));
+
+        MagDetailsController magDctrl = new MagDetailsController();
+        magDctrl.setIdmagd(idmagcurrent);
+        loader.setController(magDctrl);
+        Parent detailsMag_interface = loader.load();
+
+        supp_stage.initStyle(StageStyle.UNDECORATED);
+        Scene supp_scene = new Scene(detailsMag_interface);
+        supp_scene.setFill(Color.TRANSPARENT);
+        supp_stage.setScene(supp_scene);
+        supp_stage.initModality(Modality.APPLICATION_MODAL);
+        supp_stage.showAndWait();
+        
     }
 
     @Override
@@ -143,17 +167,27 @@ public class MagazinController implements Initializable {
         Connexion cn1 = Connexion.getInstance();
         Connection conn = cn1.getConnection();
         try {
-            String reqIMG = "SELECT img FROM magazin WHERE nom_magazin ='" + nomMag + "'";
+            String reqIMG = "SELECT img FROM magazin WHERE id ='" + idmagcurrent + "'";
             Statement stmimg = conn.createStatement();
             ResultSet rsimg = stmimg.executeQuery(reqIMG);
             rsimg.next();
             URLimg = rsimg.getString("img");
+            
             rsimg.close();
         } catch (SQLException ex) {
             Logger.getLogger(MagazinController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        nom_maglabel.setText(nomMag);
-        this.nommagcurrent = nomMag;
+        if(!ClientController.isClient){
+            this.nommagcurrent = nomMag;
+            consulter.setVisible(false);
+        }else{
+               modif_mag.setVisible(false);
+               supp_mag.setVisible(false);
+               consulter.setVisible(true);
+               
+        }
+        
+        nom_maglabel.setText(nommagcurrent);
         imgMag.setImage(new Image(URLimg, true));
     }
 

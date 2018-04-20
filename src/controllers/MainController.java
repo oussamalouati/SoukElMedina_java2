@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import utils.Connexion;
 import com.jfoenix.controls.JFXButton;
@@ -53,6 +53,7 @@ import utils.Delta;
 public class MainController implements Initializable {
     
     public static VendeurController vdrctrl;
+    public static ClientController clictrl;
     static MediaPlayer mediaPlayer;
     public static boolean playstatus = true;
     static Media sound;
@@ -230,7 +231,37 @@ public class MainController implements Initializable {
                     }
                 });
                 break;
-            case "Client":  ;
+                
+            case "Client": 
+                
+                FXMLLoader loaderc = new FXMLLoader(getClass().getResource("/gui/Client.fxml"));
+                 clictrl = new ClientController();
+                loaderc.setController(clictrl);
+                Parent client_interface = loaderc.load();
+
+                Scene client_scene = new Scene(client_interface);
+                old_stage.close();
+                main_stage.setScene(client_scene);
+                main_stage.initStyle(StageStyle.UNDECORATED);
+                main_stage.show();
+
+                /*les deux fonction "setOnMousePressed" et "setOnMouseDragged"
+              servent à deplacer la fenetre.  */
+                client_interface.setOnMousePressed(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        dragDelta.x = main_stage.getX() - mouseEvent.getScreenX();
+                        dragDelta.y = main_stage.getY() - mouseEvent.getScreenY();
+                    }
+                });
+                client_interface.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        main_stage.setX(mouseEvent.getScreenX() + dragDelta.x);
+                        main_stage.setY(mouseEvent.getScreenY() + dragDelta.y);
+                    }
+                });
+                
                 break;
             default:
                 System.out.println("Probléme de connexion");

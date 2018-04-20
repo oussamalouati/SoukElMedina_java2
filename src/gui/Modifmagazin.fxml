@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane fx:id="an_modifMagasin" prefHeight="568.0" prefWidth="923.0" style="-fx-background-color: rgb(219,63,107,0.9); -fx-border-color: green; -fx-border-width: 2px;">
@@ -21,7 +20,7 @@
             <JFXTextField fx:id="nom_mag" labelFloat="true" layoutX="44.0" layoutY="120.0" maxWidth="267.0" minWidth="238.0" prefHeight="31.0" prefWidth="267.0" promptText="Nom du magasin" />
             <JFXTextArea fx:id="descri_mag" labelFloat="true" layoutX="44.0" layoutY="188.0" maxWidth="334.0" minWidth="334.0" prefHeight="123.0" prefWidth="334.0" promptText="Description" unFocusColor="#171515" />
             <JFXTextArea fx:id="adresse_mag" labelFloat="true" layoutX="44.0" layoutY="340.0" maxWidth="334.0" minWidth="334.0" prefHeight="100.0" prefWidth="334.0" promptText="Adresse du magasin" />
-            <JFXButton fx:id="upload_mag" alignment="CENTER" buttonType="RAISED" contentDisplay="RIGHT" layoutX="61.0" layoutY="473.0" prefHeight="25.0" prefWidth="301.0" ripplerFill="#5175da" style="-fx-background-color: #08A593;" text="Télécharger le logo/image du magasin    ">
+            <JFXButton fx:id="upload_mag" alignment="CENTER" buttonType="RAISED" contentDisplay="RIGHT" layoutX="61.0" layoutY="473.0" onAction="#uploadimgctrl" prefHeight="25.0" prefWidth="301.0" ripplerFill="#5175da" style="-fx-background-color: #08A593;" text="Télécharger le logo/image du magasin    ">
                <graphic>
                   <FontAwesomeIconView glyphName="EJECT" size="15" />
                </graphic>

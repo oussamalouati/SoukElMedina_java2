@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import com.teamdev.jxmaps.GeocoderCallback;
 import com.teamdev.jxmaps.GeocoderRequest;
@@ -27,6 +27,7 @@ import com.teamdev.jxmaps.PlaceDetailsRequest;
 import com.teamdev.jxmaps.PlaceResult;
 import com.teamdev.jxmaps.PlacesServiceStatus;
 import com.teamdev.jxmaps.javafx.MapView;
+import static controllers.MagDetailsController.detailp;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -35,20 +36,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import static soukelmedina2.MagazinController.Updmag;
-import static soukelmedina2.VendeurController.markerchange;
+import static controllers.MagazinController.Updmag;
+import static controllers.VendeurController.markerchange;
 
 /**
  *
  * @author INETEL
  */
 public class MapController extends MapView implements Initializable {
-
+    
     public static double lat = 36.7570731;
     public static double lng = 10.1782658;
     static final MapViewOptions mapOptions;
     String adresseCMarker;
-
+    
     static {
         // initializing a map view options
         mapOptions = new MapViewOptions();
@@ -78,7 +79,10 @@ public class MapController extends MapView implements Initializable {
     //final MapView mapView = new MapView();
     @FXML
     private MapView mapView;
-
+    @FXML
+    private BorderPane bpmap;
+    @FXML
+    private AnchorPane anmap;
     public String getfullAdress(Map map, MouseEvent me) {
 
         return adresseCMarker;
@@ -86,7 +90,7 @@ public class MapController extends MapView implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
         mapView.setOnMapReadyHandler(new MapReadyHandler() {
 
             public void onMapReady(MapStatus status) {
@@ -173,6 +177,14 @@ public class MapController extends MapView implements Initializable {
                 }
             }
         });
+        if(detailp){
+                bpmap.setPrefHeight(220.0);
+                bpmap.setPrefWidth(360.0);
+                anmap.setPrefHeight(220.0);
+                anmap.setPrefWidth(360.0);
+              
+         }
+        
     }
 
 }

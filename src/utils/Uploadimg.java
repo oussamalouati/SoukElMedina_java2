@@ -20,7 +20,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.util.EntityUtils;
-import soukelmedina2.VendeurController;
+import controllers.VendeurController;
 
 /**
  *

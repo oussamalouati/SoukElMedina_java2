@@ -14,10 +14,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static soukelmedina2.MainController.id;
-import static soukelmedina2.MainController.login;
-import static soukelmedina2.MainController.nom;
-import static soukelmedina2.MainController.prenom;
+import static controllers.MainController.id;
+import static controllers.MainController.login;
+import static controllers.MainController.nom;
+import static controllers.MainController.prenom;
 import utils.Connexion;
 
 /**

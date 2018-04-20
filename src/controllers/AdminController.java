@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soukelmedina2;
+package controllers;
 
 import com.jfoenix.controls.JFXButton;
 import tests.Main;
@@ -23,8 +23,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import static soukelmedina2.MainController.nom;
-import static soukelmedina2.MainController.prenom;
+import static controllers.MainController.nom;
+import static controllers.MainController.prenom;
 import utils.Delta;
 
 /**

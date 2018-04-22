@@ -102,7 +102,13 @@ public class VendeurController implements Initializable {
     private Label usr_corrd;
     @FXML
     private JFXButton logout_btn, gestionMag_btn;
+    @FXML
+    private AnchorPane an_modifsucces;
 
+    public AnchorPane getAn_modifsucces() {
+        return an_modifsucces;
+    }
+    
     public JFXButton getGestionMag_btn() {
         return gestionMag_btn;
     }
@@ -190,7 +196,17 @@ public class VendeurController implements Initializable {
                 userupd.setAdresse(adresse_area.getText());
                 userupd.setMdp(mdp_field.getText());
                 //update
-                US.modfierUser(userupd);  
+                US.modfierUser(userupd);
+                
+                 an_modifsucces.setVisible(true);
+                new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    an_modifsucces.setVisible(false);
+                }
+            },
+                    3000);
             }
         });
         suppCompteStep2.setOnMousePressed(new EventHandler<MouseEvent>() {

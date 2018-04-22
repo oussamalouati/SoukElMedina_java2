@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="60.0" prefWidth="838.0" style="-fx-background-color: rgb(105, 190, 280,0);" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141">
+   <children>
+      <AnchorPane prefHeight="60.0" prefWidth="861.0" style="-fx-background-color: rgb(235,234,249,0.9); -fx-background-radius: 10px;">
+         <children>
+            <Label layoutX="14.0" layoutY="18.0" text="Reference :">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="226.0" layoutY="18.0" text="Date de commande :">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="584.0" layoutY="18.0" text="Montant :">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="btn_return1" buttonType="RAISED" layoutX="766.0" layoutY="17.0" prefHeight="27.0" prefWidth="84.0" style="-fx-background-color: #D66700;" text="Detail" textFill="WHITE">
+               <font>
+                  <Font name="Impact" size="14.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fill="#fffafa" glyphName="BINOCULARS" size="15" />
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <Label fx:id="reflabel" alignment="CENTER" layoutX="102.0" layoutY="20.0" prefHeight="21.0" prefWidth="116.0" style="-fx-background-color: #E8BAAB;" text="cli000">
+               <font>
+                  <Font name="System Italic" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="datecmdlabel" alignment="CENTER" layoutX="384.0" layoutY="20.0" prefHeight="21.0" prefWidth="181.0" style="-fx-background-color: #E8BAAB;" text="cli000">
+               <font>
+                  <Font name="System Italic" size="15.0" />
+               </font>
+            </Label>
+            <Label fx:id="montantcmdlabel" alignment="CENTER" layoutX="663.0" layoutY="20.0" prefHeight="21.0" prefWidth="69.0" style="-fx-background-color: #E8BAAB;" text="cli000">
+               <font>
+                  <Font name="System Italic" size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="732.0" layoutY="18.0" text="DT">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

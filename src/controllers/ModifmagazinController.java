@@ -22,6 +22,7 @@ import static controllers.MapController.lng;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import static controllers.MainController.vdrctrl;
 import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -128,6 +129,16 @@ public class ModifmagazinController implements Initializable {
         MS.modfierMagasin(magasin);
          
         current_stage.close();
+        
+        vdrctrl.getAn_modifsucces().setVisible(true);
+                new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                @Override
+                public void run() {
+                     vdrctrl.getAn_modifsucces().setVisible(false);
+                }
+            },
+                    3000);
     }
 
     @Override

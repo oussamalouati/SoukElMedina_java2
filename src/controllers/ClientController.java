@@ -20,6 +20,7 @@ import static controllers.MapController.lng;
 
 import static controllers.VendeurController.gridpane;
 import static controllers.VendeurController.nomMag;
+import entities.Commande;
 import entities.Magasin;
 import entities.Panier;
 import entities.Produit;
@@ -31,6 +32,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.animation.FadeTransition;
@@ -53,6 +55,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import services.CommandeService;
 import services.MagasinService;
 import services.UserService;
 import utils.Delta;
@@ -64,9 +67,10 @@ import utils.Uploadimg;
  * @author INETEL
  */
 public class ClientController implements Initializable {
-   
+
     public static GridPane gridpanePpan;
     public GridPane gridpane;
+    public GridPane gridpaneCMD;
     final Delta dragDelta = new Delta();
     public static String nomMag;
     public static int nbrMag;
@@ -74,6 +78,7 @@ public class ClientController implements Initializable {
 
     public static Panier panier = new Panier();
 
+    CommandeService CS = new CommandeService();
     UserService US = new UserService();
     MagasinService MS = new MagasinService();
 
@@ -84,7 +89,7 @@ public class ClientController implements Initializable {
     @FXML
     private AnchorPane validerSuppMag;
     @FXML
-    private ScrollPane scrollPanemags,scrollpanier;
+    private ScrollPane scrollPanemags, scrollpanier, scrollPaneCMD;
     @FXML
     private JFXTextField pass_text, nom_mag;
     @FXML
@@ -98,23 +103,23 @@ public class ClientController implements Initializable {
     @FXML
     private JFXButton show_mdp;
     @FXML
-    private JFXButton btn_valider;
+    private JFXButton btn_valider, btn_return_pan;
     @FXML
     private JFXButton gest_compte, suppCompteStep1, suppCompteStep2, suppAnnuler;
     @FXML
-    private AnchorPane an_gestCompte, validerSupp, an_Mags,produitpanier,votrepanier;
+    private AnchorPane an_gestCompte, validerSupp, an_Mags, produitpanier, votrepanier, an_CMD;
     @FXML
-    private AnchorPane dashboard, mapanchor;
+    private AnchorPane dashboard, mapanchor,an_panempty,an_ajtcmd,an_modifsucces;
     @FXML
-    private Label usr_corrd,totalpanier,nbprodpanlabel;
+    private Label usr_corrd, totalpanier, nbprodpanlabel;
     @FXML
-    private JFXButton logout_btn, gestionMag_btn,afficherpan;
+    private JFXButton logout_btn, gestionMag_btn, afficherpan, affCMD;
 
     public JFXButton getAfficherpan() {
         return afficherpan;
     }
     @FXML
-    private JFXButton createMag, upload_mag, insert_mag, music_btn, music_btn_stop ;
+    private JFXButton createMag, upload_mag, insert_mag, music_btn, music_btn_stop;
 
     @FXML
     private AnchorPane an_gestMag;
@@ -172,7 +177,7 @@ public class ClientController implements Initializable {
         an_gestCompte.setVisible(true);
         dashboard.setVisible(false);
         scrollPanemags.setVisible(false);
-
+        scrollPaneCMD.setVisible(false);
         //affichage des information de l'utilisateur authentifié 
         User user = US.afficherUser(id);
         nom_field.setText(user.getNom());
@@ -198,6 +203,16 @@ public class ClientController implements Initializable {
                 userupd.setMdp(mdp_field.getText());
                 //update
                 US.modfierUser(userupd);
+                
+                an_modifsucces.setVisible(true);
+                new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    an_modifsucces.setVisible(false);
+                }
+            },
+                    3000);
             }
         });
         suppCompteStep2.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -265,6 +280,8 @@ public class ClientController implements Initializable {
         an_gestCompte.setVisible(false);
         scrollPanemags.setVisible(false);
         votrepanier.setVisible(false);
+        scrollPaneCMD.setVisible(false);
+
     }
 
     @FXML
@@ -272,6 +289,7 @@ public class ClientController implements Initializable {
         scrollPanemags.setVisible(true);
         an_gestCompte.setVisible(false);
         dashboard.setVisible(false);
+        scrollPaneCMD.setVisible(false);
 
         MS.nbmags();//determiner le nbr de magazin
 
@@ -309,32 +327,32 @@ public class ClientController implements Initializable {
         }
         scrollPanemags.setFitToHeight(true);
         an_Mags.getChildren().add(gridpane);
-        
-        
+
     }
 
     @FXML
     void afficherpanier(ActionEvent event) throws IOException {
         int row = 0;
-        
+
+        scrollPaneCMD.setVisible(false);
         produitpanier.getChildren().remove(gridpanePpan);
-        
+
         votrepanier.setVisible(true);
         totalpanier.setText(toString(panier.calculerPanier()));
-        
-       
+
         Set cles = panier.getMapPan().keySet();
         Iterator it = cles.iterator();
-        
+
         gridpanePpan = new GridPane();
         gridpanePpan.setPadding(new Insets(5, 5, 5, 5));
         gridpanePpan.setHgap(5);
         gridpanePpan.setVgap(5);
         int indexprod = -1;
+
         while (it.hasNext()) {
             Produit cle = (Produit) it.next();
             int qte = panier.getMapPan().get(cle);
-            
+
             FXMLLoader loaderPpan = new FXMLLoader(getClass().getResource("/gui/Produitpanier.fxml"));
             ProduitpanierController prodpanctrl = new ProduitpanierController();
             prodpanctrl.setProduit(cle);
@@ -343,21 +361,97 @@ public class ClientController implements Initializable {
             prodpanctrl.setIndexprod(indexprod);
             loaderPpan.setController(prodpanctrl);
             Parent prodpanAnchor = loaderPpan.load();
-            
-            
+
             gridpanePpan.add(prodpanAnchor, 1, row);
             row++;
         }
         scrollpanier.setFitToHeight(true);
         produitpanier.getChildren().add(gridpanePpan);
-        
-        
-        
+
+        btn_return_pan.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                votrepanier.setVisible(false);
+            }
+        });
+    }
+
+    @FXML
+    void passerCMD(ActionEvent event) {
+        if (panier.getMapPan().isEmpty()) {
+            an_panempty.setVisible(true);
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    an_panempty.setVisible(false);
+                }
+            },
+                    3000);
+
+        } else {
+            Commande cmd = new Commande();
+            cmd.setId_client(id);
+            cmd.setRef(CS.totcom());
+            cmd.setTotal(totalpanier.getText());
+            cmd.setDate();
+
+            CS.insertCMD(cmd);
+            
+            panier.getMapPan().clear();
+            votrepanier.setVisible(false);
+            
+            an_ajtcmd.setVisible(true);
+            
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    an_ajtcmd.setVisible(false);
+                }
+            },
+                    3000);
+            
+            affCMD.fire();
+        }
+    }
+
+    @FXML
+    void affCMDbtn(ActionEvent event) throws SQLException, IOException {
+        scrollPaneCMD.setVisible(true);
+
+        an_CMD.getChildren().remove(gridpaneCMD);
+
+        ResultSet rs = CS.afficherTCMDclient(id);
+
+        int row = 0;
+
+        gridpaneCMD = new GridPane();
+        gridpaneCMD.setPadding(new Insets(60, 5, 5, 5));
+        gridpaneCMD.setHgap(5);
+        gridpaneCMD.setVgap(5);
+
+        while (rs.next()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Cmdcli.fxml"));
+            CmdcliController cmdclictrl = new CmdcliController();
+
+            cmdclictrl.setRef(rs.getString("reference"));
+            cmdclictrl.setDate(rs.getString("date"));
+            cmdclictrl.setPrixtot(rs.getString("totalprix"));
+
+            loader.setController(cmdclictrl);
+            Parent cmdAnchor = loader.load();
+
+            gridpaneCMD.add(cmdAnchor, 1, row);
+            row++;
+        }
+        scrollPaneCMD.setFitToHeight(true);
+        an_CMD.getChildren().add(gridpaneCMD);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       
+
         isClient = true;
         usr_corrd.setText(nom + " " + prenom);
         fadeIn1.setNode(validerSupp);
@@ -376,8 +470,9 @@ public class ClientController implements Initializable {
         }
 
     }
+
     private String toString(float aInt) {
-        return ""+aInt;
-    }    
+        return "" + aInt;
+    }
 
 }

@@ -212,7 +212,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </JFXButton>
-                        <JFXButton buttonType="RAISED" layoutX="-1.0" layoutY="289.0" prefHeight="42.0" prefWidth="200.0" style="-fx-background-color: #08A593;" text=" vos commandes" textFill="#fce4e4">
+                        <JFXButton fx:id="affCMD" buttonType="RAISED" layoutX="-1.0" layoutY="289.0" onAction="#affCMDbtn" prefHeight="42.0" prefWidth="200.0" style="-fx-background-color: #08A593;" text=" vos commandes" textFill="#fce4e4">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -391,7 +391,7 @@
                      <children>
                         <AnchorPane layoutX="238.0" layoutY="83.0" prefHeight="489.0" prefWidth="675.0" style="-fx-background-color: rgb(37,88,116,0.95);">
                            <children>
-                              <JFXButton fx:id="btn_return1" buttonType="RAISED" layoutX="14.0" layoutY="441.0" onAction="#backtodash" prefHeight="34.0" prefWidth="183.0" style="-fx-background-color: #D66700;" text="Retour" textFill="WHITE">
+                              <JFXButton fx:id="btn_return_pan" buttonType="RAISED" layoutX="14.0" layoutY="441.0" prefHeight="34.0" prefWidth="183.0" style="-fx-background-color: #D66700;" text="Retour" textFill="WHITE">
                                  <font>
                                     <Font name="Impact" size="18.0" />
                                  </font>
@@ -402,7 +402,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </JFXButton>
-                              <JFXButton fx:id="btn_return11" buttonType="RAISED" contentDisplay="RIGHT" layoutX="479.0" layoutY="441.0" onAction="#backtodash" prefHeight="34.0" prefWidth="183.0" style="-fx-background-color: #D66700;" text="Passer commande" textFill="WHITE">
+                              <JFXButton fx:id="btn_return11" buttonType="RAISED" contentDisplay="RIGHT" layoutX="479.0" layoutY="441.0" onAction="#passerCMD" prefHeight="34.0" prefWidth="183.0" style="-fx-background-color: #D66700;" text="Passer commande" textFill="WHITE">
                                  <font>
                                     <Font name="Impact" size="18.0" />
                                  </font>
@@ -448,6 +448,52 @@
                               <DropShadow height="169.26" radius="88.5775" width="187.05" />
                            </effect>
                         </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <ScrollPane fx:id="scrollPaneCMD" hbarPolicy="NEVER" layoutX="213.0" layoutY="85.0" prefHeight="580.0" prefWidth="923.0" style="-fx-background-color: transparent;" visible="false">
+                     <content>
+                        <AnchorPane fx:id="an_CMD" prefHeight="592.0" prefWidth="909.0" style="-fx-background-color: rgb(37,88,116,0.95);">
+                           <children>
+                              <Label layoutX="346.0" layoutY="14.0" text="Vos commandes" textFill="WHITE" underline="true">
+                                 <font>
+                                    <Font name="Impact" size="32.0" />
+                                 </font>
+                                 <effect>
+                                    <Glow />
+                                 </effect>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <AnchorPane fx:id="an_panempty" layoutX="354.0" layoutY="233.0" prefHeight="200.0" prefWidth="448.0" style="-fx-background-color: rgb(69,67,114,0.8); -fx-border-color: #ffffff;" visible="false">
+                     <children>
+                        <Label layoutX="3.0" layoutY="112.0" prefHeight="23.0" prefWidth="445.0" text="veuillez ajouter des produits pour passer une commande" textFill="#fcfcfc">
+                           <font>
+                              <Font name="Impact" size="19.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView fill="#eeeeee" glyphName="STACK_OVERFLOW" layoutX="203.0" layoutY="75.0" size="45" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="an_ajtcmd" layoutX="355.0" layoutY="233.0" prefHeight="200.0" prefWidth="448.0" style="-fx-background-color: rgb(69,67,114,0.8); -fx-border-color: #ffffff;" visible="false">
+                     <children>
+                        <Label layoutX="93.0" layoutY="113.0" prefHeight="23.0" prefWidth="263.0" text="commande envoyée avec succés" textFill="#fcfcfc">
+                           <font>
+                              <Font name="Impact" size="19.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView fill="#eeeeee" glyphName="STACK_OVERFLOW" layoutX="203.0" layoutY="75.0" size="45" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="an_modifsucces" layoutX="364.0" layoutY="243.0" prefHeight="200.0" prefWidth="448.0" style="-fx-background-color: rgb(69,67,114,0.8); -fx-border-color: #ffffff;" visible="false">
+                     <children>
+                        <Label layoutX="122.0" layoutY="110.0" prefHeight="23.0" prefWidth="201.0" text="Modification avec succés" textFill="#fcfcfc">
+                           <font>
+                              <Font name="Impact" size="19.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView fill="#eeeeee" glyphName="THUMBS_UP" layoutX="203.0" layoutY="75.0" size="45" />
                      </children>
                   </AnchorPane>
                </children>
